@@ -1,6 +1,6 @@
-# envoy-extproc-payloadlimit-demo-go
+# envoy-extproc-crc32-check-demo-go
 
-This repository contains a demo application written in Go that demonstrates the usage of Envoy's External Processor (ExtProc) filter to do `payload limit` for POST request.
+This repository contains a demo application written in Go that demonstrates the usage of Envoy's External Processor (ExtProc) filter to do `crc(32) check` for HTTP request.
 
 ## Overview
 
@@ -19,7 +19,7 @@ To get started with the demo application, follow these steps:
 
   1. Clone the repository:
      ```
-     git clone https://github.com/projectsesame/envoy-extproc-payloadlimit-demo-go.git
+     git clone https://github.com/projectsesame/envoy-extproc-crc32-check-demo-go.git
      ```
 
   2. Build the Go application:
@@ -29,8 +29,40 @@ To get started with the demo application, follow these steps:
 
   3. Run the application:
      ```
-     ./envoy-extproc-payloadlimit-demo-go payload-limit --log-stream --log-phases payload-limit 32
+     ./envoy-extproc-crc32-check-demo-go crc32-check --log-stream --log-phases poly "0x82f63b78"
      ```
+
+  4. Do request:
+     ```
+     curl --request POST \
+     --url http://127.0.0.1:8080/post \
+     --data '{
+      "data": "123456789",
+      "crc32": "E7C41C6B",
+     }'
+     ```
+
+     Field Description:
+
+      + **data**:  the content.
+      + **crc32**: crc for the data.
+
+     PS:
+
+      The example crc is calculated using the following settings, which are the same configuration as the standard package of go.
+
+      + **Bit Width**:                32
+      + **REFIN**:                    true
+      + **REFOUT**:                   true
+      + **XOROUT (HEX)**:             0xFFFFFFFF
+      + **Initial Value (HEX)**:      0xFFFFFFFF
+      + **Polynomial Formula (HEX)**: 0x82F63B78
+
+
+
+
+
+
 
 
 ## Usage

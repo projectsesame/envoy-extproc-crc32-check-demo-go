@@ -35,7 +35,7 @@ static_resources:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.ext_proc.v3.ExternalProcessor
                       grpc_service:
                         envoy_grpc:
-                          cluster_name: payload-limit
+                          cluster_name: crc32-check
                         timeout: 30s
                       failure_mode_allow: true
                       message_timeout: 0.2s
@@ -70,19 +70,19 @@ static_resources:
                   socket_address:
                     address: upstream
                     port_value: 8000
-  - name: payload-limit
+  - name: crc32-check
     dns_lookup_family: V4_ONLY
     lb_policy: LEAST_REQUEST
     load_assignment:
-      cluster_name: payload-limit
+      cluster_name: crc32-check
       endpoints:
       - lb_endpoints:
         - endpoint:
             address:
               socket_address:
-                address: payload-limit
+                address: crc32-check
                 port_value: 50051
-            hostname: payload-limit
+            hostname: crc32-check
     type: LOGICAL_DNS
     typed_extension_protocol_options:
       envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
